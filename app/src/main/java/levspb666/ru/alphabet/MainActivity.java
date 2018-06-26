@@ -10,7 +10,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
-import static levspb666.ru.alphabet.util.SoundUtil.playMusic;
+import static levspb666.ru.alphabet.Action.HI;
+import static levspb666.ru.alphabet.Action.NOFING;
+import static levspb666.ru.alphabet.Game.closeView;
+import static levspb666.ru.alphabet.util.SoundUtil.play;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,20 +38,16 @@ public class MainActivity extends AppCompatActivity {
         on = findViewById(R.id.on1);
         settings = findViewById(R.id.settings);
         on.setClickable(true);
+        closeView = false;
     }
 
     public void on(View view) {
         on.setClickable(false);
-
         Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.click);
-        on.startAnimation(anim);
-        playMusic(MainActivity.this, R.raw.click, 100);
-        playMusic(MainActivity.this, R.raw.hi, 500);
         anim.setAnimationListener(new Animation.AnimationListener() {
-
             @Override
             public void onAnimationStart(Animation animation) {
-
+                play(MainActivity.this, R.raw.click, HI);
             }
 
             @Override
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation) {
                 new Thread(() -> {
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(400);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -68,17 +67,16 @@ public class MainActivity extends AppCompatActivity {
                 }).start();
             }
         });
+        on.startAnimation(anim);
     }
 
     public void settings(View view) {
         settings.setClickable(false);
         Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.click);
-        settings.startAnimation(anim);
         anim.setAnimationListener(new Animation.AnimationListener() {
-
             @Override
             public void onAnimationStart(Animation animation) {
-                playMusic(MainActivity.this, R.raw.click, 50);
+                play(MainActivity.this, R.raw.click, NOFING);
             }
 
             @Override
@@ -96,5 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        settings.startAnimation(anim);
     }
 }

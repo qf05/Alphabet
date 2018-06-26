@@ -13,15 +13,15 @@ import android.util.Log;
    author: kenliu
 */
 public class SoundPoolPlayer extends SoundPool {
-    Context context;
-    int soundId;
-    int streamId;
-    int resId;
-    long duration;
-    boolean isPlaying = false;
-    boolean loaded = false;
-    MediaPlayer.OnCompletionListener listener;
-    Runnable runnable = new Runnable(){
+    private Context context;
+    private int soundId;
+    private int streamId;
+    private int resId;
+    private long duration;
+    private boolean isPlaying = false;
+    private boolean loaded = false;
+    private MediaPlayer.OnCompletionListener listener;
+    private Runnable runnable = new Runnable(){
         @Override
         public void run(){
             if(isPlaying){
@@ -35,14 +35,13 @@ public class SoundPoolPlayer extends SoundPool {
     };
 
     //timing related
-    Handler handler;
-    long startTime;
-    long endTime;
-    long timeSinceStart = 0;
+    private Handler handler;
+    private long startTime;
+    private long timeSinceStart = 0;
 
     public void pause(){
         if(streamId > 0){
-            endTime = System.currentTimeMillis();
+            long endTime = System.currentTimeMillis();
             timeSinceStart += endTime - startTime;
             super.pause(streamId);
             if(handler != null){
@@ -94,12 +93,9 @@ public class SoundPoolPlayer extends SoundPool {
     private void loadAndPlay(){
         duration = getSoundDuration(resId);
         soundId = super.load(context, resId, 1);
-        setOnLoadCompleteListener(new OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                loaded = true;
-                playIt();
-            }
+        setOnLoadCompleteListener((soundPool, sampleId, status) -> {
+            loaded = true;
+            playIt();
         });
     }
 
@@ -121,7 +117,6 @@ public class SoundPoolPlayer extends SoundPool {
 
     private long getSoundDuration(int rawId){
         MediaPlayer player = MediaPlayer.create(context, rawId);
-        int duration = player.getDuration();
-        return duration;
+        return player.getDuration();
     }
 }

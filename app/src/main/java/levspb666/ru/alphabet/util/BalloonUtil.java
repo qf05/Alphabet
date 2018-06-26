@@ -17,7 +17,7 @@ public class BalloonUtil {
     private static final int MIN_ANIMATION_DELAY = 500;
     private static final int MAX_ANIMATION_DELAY = 2500;
     private static final int MIN_ANIMATION_DURATION = 1000;
-    private static final int MAX_ANIMATION_DURATION = 8000;
+    private static final int MAX_ANIMATION_DURATION = 5000;
     public static final int BALLOONS_PER_LEVEL = 15;
     private static int mNextColor;
     private static int mScreenHeight;
@@ -45,6 +45,7 @@ public class BalloonUtil {
     public static class BalloonLauncher extends AsyncTask<Integer, Integer, Void> {
 
         private Context context;
+
         BalloonLauncher(Context context) {
             this.context = context;
         }

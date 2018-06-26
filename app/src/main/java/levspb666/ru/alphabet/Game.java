@@ -31,10 +31,13 @@ import com.plattysoft.leonids.ParticleSystem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static levspb666.ru.alphabet.Action.*;
 import static levspb666.ru.alphabet.util.BalloonUtil.*;
 import static levspb666.ru.alphabet.util.GameUtil.*;
-import static levspb666.ru.alphabet.util.SoundUtil.*;
+import static levspb666.ru.alphabet.util.SoundUtil.play;
+import static levspb666.ru.alphabet.util.SoundUtil.poolPlayers;
 
 public class Game extends AppCompatActivity implements
         RecognitionListener, Balloon.BalloonListener {
@@ -44,20 +47,22 @@ public class Game extends AppCompatActivity implements
 
     public static List<Balloon> mBalloons = new ArrayList<>();
     public static ViewGroup mContentView;
-    private int mBalloonsPopped;
+    private AtomicInteger mBalloonsPopped = new AtomicInteger(0);
 
     private TextView returnedText;
     private static ToggleButton toggleButton;
     private ProgressBar progressBar;
     private static SpeechRecognizer speech = null;
     private Intent recognizerIntent;
-    public static Button next;
+    private static Button next;
     public static String letter;
     private static TextView ext;
     private static Animation anim;
     private static String recording = "";
     private static String LOG_TAG = "GAME";
     private ImageView mic;
+    public static boolean b;
+    public static boolean closeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +71,7 @@ public class Game extends AppCompatActivity implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.game);
-        if (getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
         mContentView = findViewById(R.id.speachId);
@@ -79,12 +84,10 @@ public class Game extends AppCompatActivity implements
 
         observer();
         progressBar.setVisibility(View.INVISIBLE);
-
-        next.setClickable(false);
         mic.setVisibility(View.INVISIBLE);
         toggleButton.setVisibility(View.INVISIBLE);
         toggleButton.setChecked(false);
-
+        closeView = false;
         speech = SpeechRecognizer.createSpeechRecognizer(this);
         Log.i(LOG_TAG, "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(this));
         speech.setRecognitionListener(this);
@@ -102,63 +105,75 @@ public class Game extends AppCompatActivity implements
                         (Game.this,
                                 new String[]{Manifest.permission.RECORD_AUDIO},
                                 REQUEST_RECORD_PERMISSION);
+                Log.i(LOG_TAG, "START LISTENING");
             } else {
                 mic.setVisibility(View.INVISIBLE);
                 progressBar.setIndeterminate(false);
                 progressBar.setVisibility(View.INVISIBLE);
                 speech.stopListening();
+                Log.i(LOG_TAG, "STOP LISTENING");
             }
         });
-        lisn(Game.this);
+        goLetter(Game.this);
     }
 
     public void next(View view) {
-        next.setClickable(false);
+        b = false;
+        next.setEnabled(false);
+        speech.stopListening();
         toggleButton.setChecked(false);
         Animation anim = AnimationUtils.loadAnimation(Game.this, R.anim.click);
+        new Thread(() -> play(Game.this, R.raw.click, YES)).start();
         next.startAnimation(anim);
-        b=true;
-        playMusic(Game.this, R.raw.click, 90);
     }
 
-    public static void lisn(Context context) {
-        b = false;
-        letter = getletter(alphabatLight);
+    public static void goLetter(Context context) {
+        b = true;
+        next.setAlpha(0.1f);
+        next.setEnabled(false);
+        letter = getletter(alphabetLight);
         ext.setText(letter);
-        anim.setStartOffset(1000);
+        anim.setStartOffset(700);
         ext.startAnimation(anim);
-        playMusic(context, R.raw.say, 700);
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            play(context, R.raw.say, START);
+        }).start();
     }
 
     public static void start1() {
-        if(!b) {
-            recording = "";
-            Log.i(LOG_TAG, "start");
-            toggleButton.setChecked(true);
-            next.setVisibility(View.VISIBLE);
-            next.setClickable(true);
-        }
+        next.setAlpha(1f);
+        recording = "";
+        Log.i(LOG_TAG, "start");
+        toggleButton.setChecked(true);
+        next.setEnabled(true);
     }
 
-
     private void right() {
+        speech.stopListening();
         toggleButton.setChecked(false);
         if (recording != null && !recording.isEmpty() && recording.length() > 0) {
             recording = recording.toUpperCase();
             if (recording.contains(letter)) {
+                Log.i(LOG_TAG, "TRUE");
+                next.setAlpha(0.1f);
+                next.setEnabled(false);
                 toggleButton.setChecked(false);
                 Toast.makeText(this, "Yes", Toast.LENGTH_SHORT).show();
-                next.setVisibility(View.INVISIBLE);
-                next.setClickable(false);
-                b = true;
-                playMusic(Game.this, R.raw.yes, 0);
+                play(Game.this, R.raw.yes, YES);
             } else {
                 Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
-                playMusicNo(Game.this, R.raw.no);
+                play(Game.this, R.raw.no, START);
             }
         } else {
             Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
-            start1();
+            if (b) {
+                start1();
+            }
         }
     }
 
@@ -178,18 +193,16 @@ public class Game extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-//        b = false;
-        toggleButton.setChecked(false);
-//        next.setClickable(false);
-//        next.setVisibility(View.INVISIBLE);
+        b = false;
+        closeView = true;
         if (speech != null) {
             speech.cancel();
             speech.destroy();
         }
-        if (mpList!=null&&!mpList.isEmpty()){
-            for (int i = 0; i < mpList.size(); i++) {
-                mpList.get(i).stop();
-                mpList.get(i).release();
+        if (poolPlayers != null && !poolPlayers.isEmpty()) {
+            for (int i = 0; i < poolPlayers.size(); i++) {
+                poolPlayers.get(i).stop();
+                poolPlayers.get(i).release();
             }
         }
         super.onStop();
@@ -221,7 +234,9 @@ public class Game extends AppCompatActivity implements
         Log.d(LOG_TAG, "FAILED " + errorMessage);
         toggleButton.setChecked(false);
         if (errorCode == SpeechRecognizer.ERROR_NO_MATCH) {
-            start1();
+            if (b) {
+                start1();
+            }
         }
     }
 
@@ -265,7 +280,7 @@ public class Game extends AppCompatActivity implements
     @Override
     public void popBalloon(Balloon balloon, boolean userTouch) {
         if (userTouch) {
-            playMusic(Game.this, R.raw.touch, 0);
+            play(Game.this, R.raw.touch, NOFING);
             Bitmap bitmap = Bitmap.createBitmap(1, 1,
                     Bitmap.Config.ARGB_8888);
             bitmap = getCroppedBitmap(bitmap, balloon.getColor());
@@ -273,20 +288,12 @@ public class Game extends AppCompatActivity implements
                     .setSpeedRange(0.1f, 0.5f)
                     .oneShot(balloon, NUM_PARTICLES);
         }
-        mBalloonsPopped++;
+        mBalloonsPopped.getAndIncrement();
         mContentView.removeView(balloon);
         mBalloons.remove(balloon);
-        if (mBalloonsPopped == BALLOONS_PER_LEVEL) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(900);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Intent intent = new Intent(Game.this, Game.class);
-                startActivity(intent);
-                finish();
-            }).start();
+        if (mBalloonsPopped.get() >= BALLOONS_PER_LEVEL) {
+            mBalloonsPopped.set(0);
+            goLetter(this);
         }
     }
 }
