@@ -63,6 +63,7 @@ public class Game extends AppCompatActivity implements
     private ImageView mic;
     public static boolean b;
     public static boolean closeView;
+    public static boolean isNextClick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +120,7 @@ public class Game extends AppCompatActivity implements
 
     public void next(View view) {
         b = false;
+        isNextClick = true;
         next.setEnabled(false);
         speech.stopListening();
         toggleButton.setChecked(false);
@@ -146,6 +148,7 @@ public class Game extends AppCompatActivity implements
     }
 
     public static void start1() {
+        isNextClick = false;
         next.setAlpha(1f);
         recording = "";
         Log.i(LOG_TAG, "start");
@@ -156,23 +159,25 @@ public class Game extends AppCompatActivity implements
     private void right() {
         speech.stopListening();
         toggleButton.setChecked(false);
-        if (recording != null && !recording.isEmpty() && recording.length() > 0) {
-            recording = recording.toUpperCase();
-            if (recording.contains(letter)) {
-                Log.i(LOG_TAG, "TRUE");
-                next.setAlpha(0.1f);
-                next.setEnabled(false);
-                toggleButton.setChecked(false);
-                Toast.makeText(this, "Yes", Toast.LENGTH_SHORT).show();
-                play(Game.this, R.raw.yes, YES);
+        if (!isNextClick) {
+            if (recording != null && !recording.isEmpty() && recording.length() > 0) {
+                recording = recording.toUpperCase();
+                if (recording.contains(letter)) {
+                    Log.i(LOG_TAG, "TRUE");
+                    next.setAlpha(0.1f);
+                    next.setEnabled(false);
+                    toggleButton.setChecked(false);
+                    Toast.makeText(this, "Yes", Toast.LENGTH_SHORT).show();
+                    play(Game.this, R.raw.yes, YES);
+                } else {
+                    Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
+                    play(Game.this, R.raw.no, START);
+                }
             } else {
                 Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
-                play(Game.this, R.raw.no, START);
-            }
-        } else {
-            Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
-            if (b) {
-                start1();
+                if (b) {
+                    start1();
+                }
             }
         }
     }
