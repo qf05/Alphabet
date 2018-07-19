@@ -21,12 +21,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
+            android:layout_marginEnd="-80dp"
+            android:layout_marginStart="-80dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -34,8 +36,8 @@
                 android:id="@+id/level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button"
                 android:onClick="changeLevel"
@@ -48,8 +50,8 @@
                 android:id="@+id/color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button"
                 android:onClick="color"
@@ -60,12 +62,12 @@
                 android:id="@+id/info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button"
                 android:onClick="info"
-                android:text="Вывод\nтекста"
+                android:text="Вывод \n текста"
                 android:textSize="18dp" />
         </LinearLayout>
 
@@ -73,6 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
+            android:layout_marginStart="-80dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -80,8 +83,8 @@
                 android:id="@+id/fon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="80dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button"
                 android:onClick="changeFon"
@@ -92,8 +95,8 @@
                 android:id="@+id/balloons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="80dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button"
                 android:onClick="balloons"
@@ -106,12 +109,12 @@
                 android:id="@+id/reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="80dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button"
                 android:onClick="reset"
-                android:text="Сброс \nнастроек"
+                android:text="Сброс \n настроек"
                 android:textSize="18dp" />
 
         </LinearLayout>

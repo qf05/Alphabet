@@ -104,7 +104,7 @@ public class BalloonUtil {
         mContentView.addView(balloon);
 
 //      Let 'er fly
-        balloon.releaseBalloon(mScreenHeight, 15000 / speedBalloons);
+        balloon.releaseBalloon(mScreenHeight, 30000 / speedBalloons - 1000);
 
     }
 }

@@ -20,6 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginRight="-50dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -27,8 +28,8 @@
                 android:id="@+id/level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/button"
                 android:onClick="changeLevel"
@@ -39,8 +40,8 @@
                 android:id="@+id/color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/button"
                 android:onClick="color"
@@ -51,12 +52,12 @@
                 android:id="@+id/info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/button"
                 android:onClick="info"
-                android:text="вывод\nтекста"
+                android:text="вывод \n текста"
                 android:textSize="18dp" />
         </LinearLayout>
 
@@ -64,6 +65,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginLeft="-50dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -71,8 +73,8 @@
                 android:id="@+id/fon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/button"
                 android:onClick="changeFon"
@@ -83,8 +85,8 @@
                 android:id="@+id/balloons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/button"
                 android:onClick="balloons"
@@ -97,12 +99,12 @@
                 android:id="@+id/reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/button"
                 android:onClick="reset"
-                android:text="Сброс\nНастроек"
+                android:text="Сброс \n Настроек"
                 android:textSize="18dp" />
         </LinearLayout>
     </LinearLayout>
