@@ -6,6 +6,6 @@ public enum Action {
     HI,
     LETTER,
     START,
-    BALLON,
-    NOFING
+    BALLOON,
+    NOTHING
 }

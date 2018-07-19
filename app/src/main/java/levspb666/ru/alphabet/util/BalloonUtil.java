@@ -8,17 +8,15 @@ import java.util.Random;
 
 import levspb666.ru.alphabet.Balloon;
 
+import static levspb666.ru.alphabet.Game.canContinue;
 import static levspb666.ru.alphabet.Game.mBalloons;
 import static levspb666.ru.alphabet.Game.mContentView;
+import static levspb666.ru.alphabet.Settings.countBalloons;
+import static levspb666.ru.alphabet.Settings.speedBalloons;
 import static levspb666.ru.alphabet.util.GameUtil.mBalloonColors;
 
 public class BalloonUtil {
 
-    private static final int MIN_ANIMATION_DELAY = 500;
-    private static final int MAX_ANIMATION_DELAY = 2500;
-    private static final int MIN_ANIMATION_DURATION = 1000;
-    private static final int MAX_ANIMATION_DURATION = 5000;
-    public static final int BALLOONS_PER_LEVEL = 15;
     private static int mNextColor;
     private static int mScreenHeight;
     private static int mScreenWidth;
@@ -37,9 +35,11 @@ public class BalloonUtil {
         }
     }
 
+    public static BalloonUtil.BalloonLauncher balloonLauncher;
+
     public static void startLevel(Context context) {
-        BalloonUtil.BalloonLauncher balloonLauncher = new BalloonUtil.BalloonLauncher(context);
-        balloonLauncher.execute(BALLOONS_PER_LEVEL);
+        balloonLauncher = new BalloonUtil.BalloonLauncher(context);
+        balloonLauncher.execute(countBalloons);
     }
 
     public static class BalloonLauncher extends AsyncTask<Integer, Integer, Void> {
@@ -56,27 +56,25 @@ public class BalloonUtil {
                 throw new AssertionError(
                         "Expected 1 param for current level");
             }
-
-            int level = params[0];
-            int maxDelay = Math.max(MIN_ANIMATION_DELAY,
-                    (MAX_ANIMATION_DELAY - ((level - 1) * 300)));
-            int minDelay = maxDelay / 2;
-
             int balloonsLaunched = 0;
-            while (balloonsLaunched < BALLOONS_PER_LEVEL) {
-
+            while (balloonsLaunched < countBalloons) {
+                if (canContinue) {
 //              Get a random horizontal position for the next balloon
-                Random random = new Random();
-                int xPosition = random.nextInt(mScreenWidth - 200);
-                publishProgress(xPosition);
-                balloonsLaunched++;
+                    Random random = new Random();
+                    int xPosition = random.nextInt(mScreenWidth - 200);
+                    publishProgress(xPosition);
+                    balloonsLaunched++;
 
 //              Wait a random number of milliseconds before looping
-                int delay = random.nextInt(minDelay) + minDelay;
-                try {
-                    Thread.sleep(delay);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    int delay = ((random.nextInt(600) + 201) - speedBalloons * 20);
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    this.cancel(true);
+                    break;
                 }
             }
             return null;
@@ -92,10 +90,8 @@ public class BalloonUtil {
     }
 
     private static void launchBalloon(int x, Context context) {
-
         Balloon balloon = new Balloon(context, mBalloonColors[mNextColor], 150);
         mBalloons.add(balloon);
-
         if (mNextColor + 1 == mBalloonColors.length) {
             mNextColor = 0;
         } else {
@@ -108,8 +104,7 @@ public class BalloonUtil {
         mContentView.addView(balloon);
 
 //      Let 'er fly
-        int duration = Math.max(MIN_ANIMATION_DURATION, MAX_ANIMATION_DURATION - (1000));
-        balloon.releaseBalloon(mScreenHeight, duration);
+        balloon.releaseBalloon(mScreenHeight, 15000 / speedBalloons);
 
     }
 }

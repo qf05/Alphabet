@@ -10,15 +10,13 @@ import android.speech.SpeechRecognizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import levspb666.ru.alphabet.R;
+import static levspb666.ru.alphabet.Game.letter;
+import static levspb666.ru.alphabet.Settings.countLetters;
 
 public class GameUtil {
 
-    private static final int COUNT_IN_WORD = 2;
     private static final int RADIUS = 20;
     private static List<String> old = new ArrayList<>();
     public static String[] alphabetLight = new String[]{"А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я"};
@@ -75,7 +73,7 @@ public class GameUtil {
             int number = (int) (Math.random() * (alphabet.length));
             String letter = alphabet[number];
             if (old.size() > 0) {
-                while (old.size() > 10) {
+                while (old.size() > 11) {
                     old.remove(0);
                 }
                 if (!old.contains(letter)) {
@@ -113,8 +111,33 @@ public class GameUtil {
                     characters.add(c);
                 }
             }
-            if (characters.size() <= COUNT_IN_WORD) {
+            if (characters.size() <= countLetters) {
                 text.append(list.get(i)).append(" ");
+            }
+            switch (letter) {
+                case "Й":
+                    if (countLetters < 6 && "краткое".equalsIgnoreCase(list.get(i))) {
+                        text.append(list.get(i)).append(" ");
+                    }
+                    break;
+                case "Ь":
+                    if (countLetters < 6 && "мягкий".equalsIgnoreCase(list.get(i))) {
+                        text.append(list.get(i)).append(" ");
+                    }
+                    if (countLetters < 4 && "знак".equalsIgnoreCase(list.get(i))) {
+                        text.append(list.get(i)).append(" ");
+                    }
+                    break;
+                case "Ъ":
+                    if (countLetters < 7 &&
+                            ("твердый".equalsIgnoreCase(list.get(i))) ||
+                            "твёрдый".equalsIgnoreCase(list.get(i))) {
+                        text.append(list.get(i)).append(" ");
+                    }
+                    if (countLetters < 4 && "знак".equalsIgnoreCase(list.get(i))) {
+                        text.append(list.get(i)).append(" ");
+                    }
+                    break;
             }
         }
         return text.toString();

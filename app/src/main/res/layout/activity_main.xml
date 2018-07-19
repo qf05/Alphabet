@@ -6,6 +6,7 @@
     tools:context="levspb666.ru.alphabet.MainActivity">
 
     <ImageView
+        android:id="@+id/mainFon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/play2"

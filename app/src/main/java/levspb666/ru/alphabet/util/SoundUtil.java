@@ -11,11 +11,11 @@ import java.util.Map;
 import levspb666.ru.alphabet.Action;
 import levspb666.ru.alphabet.R;
 
-import static levspb666.ru.alphabet.Action.BALLON;
+import static levspb666.ru.alphabet.Action.BALLOON;
 import static levspb666.ru.alphabet.Action.LETTER;
 import static levspb666.ru.alphabet.Action.NEXT;
-import static levspb666.ru.alphabet.Action.NOFING;
-import static levspb666.ru.alphabet.Game.b;
+import static levspb666.ru.alphabet.Action.NOTHING;
+import static levspb666.ru.alphabet.Game.canContinue;
 import static levspb666.ru.alphabet.Game.closeView;
 import static levspb666.ru.alphabet.Game.goLetter;
 import static levspb666.ru.alphabet.Game.letter;
@@ -32,7 +32,7 @@ public class SoundUtil {
         poolPlayers.add(mPlayer);
         mPlayer.setOnCompletionListener(
                 mp -> {    //mp will be null here
-                    Log.d("debug", "completed");
+                    Log.d("debug", "voice completed");
                     poolPlayers.remove(mPlayer);
                     mPlayer.stop();
                     mPlayer.release();
@@ -46,14 +46,14 @@ public class SoundUtil {
         if (!closeView) {
             switch (action) {
                 case HI:
-                    play(context, R.raw.hi, NOFING);
+                    play(context, R.raw.hi, NOTHING);
                     break;
                 case YES:
                     play(context, R.raw.thisis, LETTER);
                     break;
                 case LETTER:
-                    if (b) {
-                        play(context, alphabetMap.get(letter), BALLON);
+                    if (canContinue) {
+                        play(context, alphabetMap.get(letter), BALLOON);
                     } else {
                         play(context, alphabetMap.get(letter), NEXT);
                     }
@@ -64,16 +64,17 @@ public class SoundUtil {
                 case START:
                     start1();
                     break;
-                case BALLON:
+                case BALLOON:
                     startLevel(context);
                     break;
-                case NOFING:
+                case NOTHING:
                     break;
             }
         }
     }
 
     private static Map<String, Integer> alphabetMap = new HashMap<>();
+
     static {
         alphabetMap.put("А", R.raw.a);
         alphabetMap.put("Б", R.raw.b);

@@ -103,6 +103,12 @@ public class Balloon extends android.support.v7.widget.AppCompatImageView implem
         }
     }
 
+    public void cancelBalloon() {
+        mListener.popBalloon(this, false);
+        mPopped = true;
+        mAnimator.cancel();
+    }
+
     public interface BalloonListener {
         void popBalloon(Balloon balloon, boolean userTouch);
     }
