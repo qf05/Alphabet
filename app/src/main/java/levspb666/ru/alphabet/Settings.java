@@ -3,12 +3,10 @@ package levspb666.ru.alphabet;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -248,30 +246,11 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
         view.startAnimation(anim);
     }
 
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if (cursor != null) {
-            //HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            //THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            String filePath = cursor.getString(columnIndex);
-            cursor.close();
-            return filePath;
-        } else
-            return uri.getPath();
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == 1) {
                 Uri selectedImageUri = data.getData();
-                String selectedImagePath = getPath(selectedImageUri);
-                if (fon) {
-                    FileManager.deleteFile(USER_FON_PATH + USER_FON_NAME);
-                }
-                FileManager.copyFile(selectedImagePath, USER_FON_PATH);
+                FileManager.copyImg(selectedImageUri, getContentResolver());
                 if (!fon) {
                     fon = true;
                     SharedPreferences.Editor editor = settings.edit();

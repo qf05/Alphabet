@@ -4,14 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -68,7 +66,7 @@ public class Game extends AppCompatActivity implements
     private TextView returnedText;
     private static ProgressBar progressBar;
     private static SpeechRecognizer speech = null;
-    private Intent recognizerIntent;
+    private static Intent recognizerIntent;
     private static Button next;
     public static String letter;
     private static TextView ext;
@@ -132,8 +130,9 @@ public class Game extends AppCompatActivity implements
         canContinue = false;
         isNextClick = true;
         next.setEnabled(false);
-        speech.stopListening();
+//        speech.stopListening();
         stopRecord();
+        speech.cancel();
         Animation anim = AnimationUtils.loadAnimation(Game.this, R.anim.click);
         new Thread(() -> play(Game.this, R.raw.click, YES)).start();
         next.startAnimation(anim);
@@ -141,6 +140,7 @@ public class Game extends AppCompatActivity implements
 
     public static void goLetter(Context context) {
         canContinue = true;
+        isNextClick = false;
         next.setAlpha(0.1f);
         next.setEnabled(false);
         if (excludeLetters) {
@@ -168,18 +168,16 @@ public class Game extends AppCompatActivity implements
     }
 
     public static void start1() {
-        isNextClick = false;
         next.setAlpha(1f);
         recording = "";
         Log.i(LOG_TAG, "start");
         startRecord();
+        isNextClick = false;
         next.setEnabled(true);
     }
 
     private void verification() {
-        speech.stopListening();
-        stopRecord();
-        if (!isNextClick) {
+        if (!isNextClick && canContinue) {
             if (recording != null && !recording.isEmpty() && recording.length() > 0) {
                 recording = recording.toUpperCase();
                 switch (letter) {
@@ -230,19 +228,19 @@ public class Game extends AppCompatActivity implements
         play(Game.this, R.raw.no, START);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_RECORD_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    speech.startListening(recognizerIntent);
-                } else {
-                    Toast.makeText(Game.this, "Permission Denied!", Toast
-                            .LENGTH_SHORT).show();
-                }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        switch (requestCode) {
+//            case REQUEST_RECORD_PERMISSION:
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    speech.startListening(recognizerIntent);
+//                } else {
+//                    Toast.makeText(Game.this, "Permission Denied!", Toast
+//                            .LENGTH_SHORT).show();
+//                }
+//        }
+//    }
 
     @Override
     protected void onStop() {
@@ -277,7 +275,7 @@ public class Game extends AppCompatActivity implements
     public void onBeginningOfSpeech() {
         Log.i(LOG_TAG, "onBeginningOfSpeech");
         progressBar.setIndeterminate(false);
-        progressBar.setMax(10);
+        progressBar.setMax(8);
     }
 
     @Override
@@ -289,18 +287,21 @@ public class Game extends AppCompatActivity implements
     public void onEndOfSpeech() {
         Log.i(LOG_TAG, "onEndOfSpeech");
         progressBar.setIndeterminate(true);
-        stopRecord();
+//        stopRecord();
     }
-
     @Override
     public void onError(int errorCode) {
         String errorMessage = getErrorText(errorCode);
         Log.d(LOG_TAG, "FAILED " + errorMessage);
-        if (canContinue) {
+        if (canContinue && !isNextClick) {
             if (errorCode == SpeechRecognizer.ERROR_NO_MATCH) {
+                stopRecord();
+                returnedText.setText(errorMessage);
                 start1();
             }
-        } else stopRecord();
+        } else {
+            stopRecord();
+        }
     }
 
     @Override
@@ -323,6 +324,7 @@ public class Game extends AppCompatActivity implements
         Log.i(LOG_TAG, "onResults");
         ArrayList<String> matches = results
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        stopRecord();
         StringBuilder text = new StringBuilder();
         if (matches != null) {
             for (String result : matches) {
@@ -332,7 +334,10 @@ public class Game extends AppCompatActivity implements
             }
         }
         recording = text.toString();
+        recording.replace("  ","");
         returnedText.setText(recording);
+        speech.startListening(recognizerIntent);
+        speech.cancel();
         verification();
     }
 
@@ -382,15 +387,23 @@ public class Game extends AppCompatActivity implements
                         new String[]{Manifest.permission.RECORD_AUDIO},
                         REQUEST_RECORD_PERMISSION);
         Log.i(LOG_TAG, "START LISTENING");
+        speech.startListening(recognizerIntent);
     }
 
     private void stopRecord() {
         if (record) {
             record = false;
+            speech.stopListening();
+            speech.cancel();
+//            speech.destroy();
+//            speech = SpeechRecognizer.createSpeechRecognizer(this);
+//            speech.setRecognitionListener(this);
+//            speech.startListening(recognizerIntent);
+//            speech.cancel();
             mic.setVisibility(View.INVISIBLE);
             progressBar.setIndeterminate(false);
             progressBar.setVisibility(View.INVISIBLE);
-            speech.stopListening();
+//            speech.stopListening();
             Log.i(LOG_TAG, "STOP LISTENING");
         }
     }

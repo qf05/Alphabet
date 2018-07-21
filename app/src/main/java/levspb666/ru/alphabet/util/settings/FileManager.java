@@ -1,5 +1,11 @@
 package levspb666.ru.alphabet.util.settings;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
@@ -9,6 +15,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import static levspb666.ru.alphabet.Settings.USER_FON_NAME;
+import static levspb666.ru.alphabet.Settings.USER_FON_PATH;
+import static levspb666.ru.alphabet.Settings.fon;
 
 public class FileManager {
 
@@ -37,5 +45,52 @@ public class FileManager {
         } catch (Exception e) {
             Log.e("file", e.getMessage());
         }
+    }
+
+    public static void copyImg(Uri uri, ContentResolver resolver){
+
+        String selectedImagePath = getPath(uri, resolver);
+        if (fon) {
+            deleteFile(USER_FON_PATH + USER_FON_NAME);
+        }
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(selectedImagePath, options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+        int simpleSize = 2;
+        if (imageHeight>1080||imageWidth>1080){
+            int maxSize=imageHeight>imageWidth?imageHeight:imageWidth;
+            while ((maxSize/simpleSize)>=1080){
+                simpleSize*=2;
+            }
+            options.inSampleSize = simpleSize;
+            options.inJustDecodeBounds = false;
+            Bitmap bitmap =  BitmapFactory.decodeFile(selectedImagePath,options);
+            try(FileOutputStream outputStream = new FileOutputStream(USER_FON_PATH + USER_FON_NAME)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+                outputStream.close();
+            }catch (Exception e){
+                Log.e("file", e.getMessage());
+            }
+        }else {
+            copyFile(selectedImagePath, USER_FON_PATH);
+        }
+    }
+
+    public static String getPath(Uri uri, ContentResolver resolver) {
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cursor = resolver.query(uri, projection, null, null, null);
+        if (cursor != null) {
+            //HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            //THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        } else
+            return uri.getPath();
     }
 }

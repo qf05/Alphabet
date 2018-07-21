@@ -18,6 +18,7 @@ import static levspb666.ru.alphabet.Action.NOTHING;
 import static levspb666.ru.alphabet.Game.canContinue;
 import static levspb666.ru.alphabet.Game.closeView;
 import static levspb666.ru.alphabet.Game.goLetter;
+import static levspb666.ru.alphabet.Game.isNextClick;
 import static levspb666.ru.alphabet.Game.letter;
 import static levspb666.ru.alphabet.Game.start1;
 import static levspb666.ru.alphabet.util.BalloonUtil.startLevel;
@@ -62,7 +63,9 @@ public class SoundUtil {
                     goLetter(context);
                     break;
                 case START:
-                    start1();
+                    if (!isNextClick) {
+                        start1();
+                    }
                     break;
                 case BALLOON:
                     startLevel(context);
@@ -76,38 +79,38 @@ public class SoundUtil {
     private static Map<String, Integer> alphabetMap = new HashMap<>();
 
     static {
-        alphabetMap.put("А", R.raw.a);
-        alphabetMap.put("Б", R.raw.b);
-        alphabetMap.put("В", R.raw.v);
-        alphabetMap.put("Г", R.raw.b);
-        alphabetMap.put("Д", R.raw.a);
-        alphabetMap.put("Е", R.raw.b);
-        alphabetMap.put("Ё", R.raw.a);
-        alphabetMap.put("Ж", R.raw.b);
-        alphabetMap.put("З", R.raw.a);
-        alphabetMap.put("И", R.raw.b);
-        alphabetMap.put("Й", R.raw.a);
-        alphabetMap.put("К", R.raw.b);
-        alphabetMap.put("Л", R.raw.a);
-        alphabetMap.put("М", R.raw.b);
-        alphabetMap.put("Н", R.raw.a);
-        alphabetMap.put("О", R.raw.b);
-        alphabetMap.put("П", R.raw.a);
-        alphabetMap.put("Р", R.raw.b);
-        alphabetMap.put("С", R.raw.a);
-        alphabetMap.put("Т", R.raw.b);
-        alphabetMap.put("У", R.raw.a);
-        alphabetMap.put("Ф", R.raw.b);
-        alphabetMap.put("Х", R.raw.a);
-        alphabetMap.put("Ц", R.raw.b);
-        alphabetMap.put("Ч", R.raw.a);
-        alphabetMap.put("Ш", R.raw.b);
-        alphabetMap.put("Щ", R.raw.a);
-        alphabetMap.put("Ъ", R.raw.b);
-        alphabetMap.put("Ы", R.raw.a);
-        alphabetMap.put("Ь", R.raw.b);
-        alphabetMap.put("Э", R.raw.a);
-        alphabetMap.put("Ю", R.raw.b);
-        alphabetMap.put("Я", R.raw.v);
+        alphabetMap.put("А", R.raw.a1);
+        alphabetMap.put("Б", R.raw.a2);
+        alphabetMap.put("В", R.raw.a3);
+        alphabetMap.put("Г", R.raw.a4);
+        alphabetMap.put("Д", R.raw.a5);
+        alphabetMap.put("Е", R.raw.a6);
+        alphabetMap.put("Ё", R.raw.a7);
+        alphabetMap.put("Ж", R.raw.a8);
+        alphabetMap.put("З", R.raw.a9);
+        alphabetMap.put("И", R.raw.a1);
+        alphabetMap.put("Й", R.raw.a11);
+        alphabetMap.put("К", R.raw.a12);
+        alphabetMap.put("Л", R.raw.a13);
+        alphabetMap.put("М", R.raw.a14);
+        alphabetMap.put("Н", R.raw.a15);
+        alphabetMap.put("О", R.raw.a16);
+        alphabetMap.put("П", R.raw.a17);
+        alphabetMap.put("Р", R.raw.a18);
+        alphabetMap.put("С", R.raw.a19);
+        alphabetMap.put("Т", R.raw.a20);
+        alphabetMap.put("У", R.raw.a2);
+        alphabetMap.put("Ф", R.raw.a22);
+        alphabetMap.put("Х", R.raw.a23);
+        alphabetMap.put("Ц", R.raw.a24);
+        alphabetMap.put("Ч", R.raw.a25);
+        alphabetMap.put("Ш", R.raw.a26);
+        alphabetMap.put("Щ", R.raw.a27);
+        alphabetMap.put("Ъ", R.raw.a28);
+        alphabetMap.put("Ы", R.raw.a29);
+        alphabetMap.put("Ь", R.raw.a30);
+        alphabetMap.put("Э", R.raw.a31);
+        alphabetMap.put("Ю", R.raw.a32);
+        alphabetMap.put("Я", R.raw.a33);
     }
 }

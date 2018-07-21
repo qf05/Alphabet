@@ -66,7 +66,7 @@ public class BalloonUtil {
                     balloonsLaunched++;
 
 //              Wait a random number of milliseconds before looping
-                    int delay = ((random.nextInt(600) + 201) - speedBalloons * 20);
+                    int delay = ((random.nextInt(1000/speedBalloons) + 701) - speedBalloons * 70);
                     try {
                         Thread.sleep(delay);
                     } catch (InterruptedException e) {
@@ -105,6 +105,5 @@ public class BalloonUtil {
 
 //      Let 'er fly
         balloon.releaseBalloon(mScreenHeight, 30000 / speedBalloons - 1000);
-
     }
 }
