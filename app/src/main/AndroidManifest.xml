@@ -2,28 +2,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="levspb666.ru.alphabet">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:logo="@drawable/trey"
+        android:roundIcon="@drawable/icon2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="levspb666.ru.alphabet.MainActivity">
+        <activity
+            android:name="levspb666.ru.alphabet.MainActivity"
+            android:icon="@drawable/icon2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="levspb666.ru.alphabet.Game" />
-        <activity android:name="levspb666.ru.alphabet.Settings" />
+        <activity
+            android:name="levspb666.ru.alphabet.Game"
+            android:icon="@drawable/icon2" />
+        <activity
+            android:name="levspb666.ru.alphabet.Settings"
+            android:icon="@drawable/icon2" />
     </application>
 
 </manifest>

@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             countBalloons = mSettings.getInt(COUNT_BALLOONS, 15);
         }
         if (mSettings.contains(INFO_ON)) {
-            infoOn = mSettings.getBoolean(INFO_ON, false);
+            infoOn = mSettings.getBoolean(INFO_ON, true);
         }
         if (mSettings.contains(INFO_FON)) {
             infoFon = mSettings.getBoolean(INFO_FON, false);

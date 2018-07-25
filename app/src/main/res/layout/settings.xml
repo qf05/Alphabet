@@ -37,18 +37,6 @@
                 android:textSize="18dp" />
 
             <Button
-                android:id="@+id/color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="35dp"
-                android:background="@drawable/button"
-                android:onClick="color"
-                android:text="Цвет букв"
-                android:textSize="18dp" />
-
-            <Button
                 android:id="@+id/info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,6 +46,18 @@
                 android:background="@drawable/button"
                 android:onClick="info"
                 android:text="вывод \n текста"
+                android:textSize="18dp" />
+
+            <Button
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/button"
+                android:onClick="reset"
+                android:text="Сброс \n Настроек"
                 android:textSize="18dp" />
         </LinearLayout>
 
@@ -82,6 +82,18 @@
                 android:textSize="18dp" />
 
             <Button
+                android:id="@+id/color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/button"
+                android:onClick="color"
+                android:text="Цвет букв"
+                android:textSize="18dp" />
+
+            <Button
                 android:id="@+id/balloons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,19 +105,6 @@
                 android:text="Шарики"
                 android:textSize="18dp" />
 
-
-
-            <Button
-                android:id="@+id/reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="35dp"
-                android:background="@drawable/button"
-                android:onClick="reset"
-                android:text="Сброс \n Настроек"
-                android:textSize="18dp" />
         </LinearLayout>
     </LinearLayout>
 

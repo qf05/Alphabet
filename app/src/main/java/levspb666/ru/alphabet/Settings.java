@@ -40,7 +40,7 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
     public static boolean fon = false;
     public static int countBalloons = 15;
     public static int speedBalloons = 4;
-    public static boolean infoOn = false;
+    public static boolean infoOn = true;
     public static boolean infoFon = false;
 
     public static String USER_FON_PATH;
@@ -542,7 +542,7 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
                 fon = false;
                 countBalloons = 15;
                 speedBalloons = 4;
-                infoOn = false;
+                infoOn = true;
                 infoFon = false;
                 Intent intent = new Intent(Settings.this, MainActivity.class);
                 startActivity(intent);

@@ -2,11 +2,15 @@ package levspb666.ru.alphabet;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -50,6 +54,7 @@ import static levspb666.ru.alphabet.util.GameUtil.getCroppedBitmap;
 import static levspb666.ru.alphabet.util.GameUtil.getErrorText;
 import static levspb666.ru.alphabet.util.GameUtil.getletter;
 import static levspb666.ru.alphabet.util.GameUtil.match;
+import static levspb666.ru.alphabet.util.SoundUtil.muteAudio;
 import static levspb666.ru.alphabet.util.SoundUtil.play;
 import static levspb666.ru.alphabet.util.SoundUtil.poolPlayers;
 
@@ -78,6 +83,8 @@ public class Game extends AppCompatActivity implements
     public static boolean closeView;
     public static boolean isNextClick;
     public static Activity activityGame;
+    public static AudioManager audioManager;
+    private static Handler restart = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,14 +130,19 @@ public class Game extends AppCompatActivity implements
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
         anim = AnimationUtils.loadAnimation(Game.this, R.anim.letter);
         activityGame = Game.this;
+        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         goLetter(Game.this);
     }
 
     public void next(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
+        } else {
+            audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+        }
         canContinue = false;
         isNextClick = true;
         next.setEnabled(false);
-//        speech.stopListening();
         stopRecord();
         speech.cancel();
         Animation anim = AnimationUtils.loadAnimation(Game.this, R.anim.click);
@@ -171,7 +183,7 @@ public class Game extends AppCompatActivity implements
         next.setAlpha(1f);
         recording = "";
         Log.i(LOG_TAG, "start");
-        startRecord();
+        restart.postDelayed(Game::startRecord, 500);
         isNextClick = false;
         next.setEnabled(true);
     }
@@ -218,14 +230,34 @@ public class Game extends AppCompatActivity implements
         Log.i(LOG_TAG, "TRUE");
         next.setAlpha(0.1f);
         next.setEnabled(false);
-        stopRecord();
         Toast.makeText(this, "Yes", Toast.LENGTH_SHORT).show();
-        play(Game.this, R.raw.yes, YES);
+        new Thread(() -> {
+            try {
+                Thread.sleep(400);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            muteAudio(false);
+            if (canContinue) {
+                play(Game.this, R.raw.yes, YES);
+            }
+        }).start();
     }
 
     private void notRight() {
+        Log.i(LOG_TAG, "NO");
         Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
-        play(Game.this, R.raw.no, START);
+        new Thread(() -> {
+            try {
+                Thread.sleep(350);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            muteAudio(false);
+            if (canContinue) {
+                play(Game.this, R.raw.no, START);
+            }
+        }).start();
     }
 
 //    @Override
@@ -244,6 +276,7 @@ public class Game extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
+        muteAudio(false);
         canContinue = false;
         closeView = true;
         if (speech != null) {
@@ -286,21 +319,73 @@ public class Game extends AppCompatActivity implements
     @Override
     public void onEndOfSpeech() {
         Log.i(LOG_TAG, "onEndOfSpeech");
-        progressBar.setIndeterminate(true);
-//        stopRecord();
     }
+
     @Override
     public void onError(int errorCode) {
         String errorMessage = getErrorText(errorCode);
         Log.d(LOG_TAG, "FAILED " + errorMessage);
         if (canContinue && !isNextClick) {
-            if (errorCode == SpeechRecognizer.ERROR_NO_MATCH) {
+            if (errorCode == SpeechRecognizer.ERROR_CLIENT){
+                speech.cancel();
+            }else {
                 stopRecord();
-                returnedText.setText(errorMessage);
-                start1();
+                muteAudio(false);
+                if (errorCode == SpeechRecognizer.ERROR_NO_MATCH && next.isEnabled()) {
+                    returnedText.setText(errorMessage);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION, new ArrayList<>());
+                    onResults(bundle);
+                }
+                if (errorCode == SpeechRecognizer.ERROR_NETWORK) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
+                    builder.setTitle("ERROR_NETWORK!")
+                            .setMessage("Проверьте подключение к интернету!")
+                            .setCancelable(false)
+                            .setNegativeButton("ОК", (dialog, id) -> {
+                                dialog.cancel();
+                                onBackPressed();
+                                finish();
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+                if (errorCode == SpeechRecognizer.ERROR_AUDIO) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
+                    builder.setTitle("ERROR_AUDIO!")
+                            .setMessage("Ошибка аудио потока!")
+                            .setCancelable(false)
+                            .setNegativeButton("ОК", (dialog, id) -> {
+                                dialog.cancel();
+                                onBackPressed();
+                                finish();
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+                if (errorCode == SpeechRecognizer.ERROR_SERVER) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
+                    builder.setTitle("ERROR_SERVER!")
+                            .setMessage("Ошибка подключения к серверу Google. \nПопробуйте перезапустить приложение!")
+                            .setCancelable(false)
+                            .setNegativeButton("ОК", (dialog, id) -> {
+                                dialog.cancel();
+                                onBackPressed();
+                                finish();
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+                if (errorCode == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
+                    stopRecord();
+                    muteAudio(false);
+                    Toast.makeText(this, "ERROR_SPEECH_TIMEOUT", Toast.LENGTH_LONG).show();
+                    next(new View(this));
+                }
             }
         } else {
             stopRecord();
+            muteAudio(false);
         }
     }
 
@@ -325,6 +410,8 @@ public class Game extends AppCompatActivity implements
         ArrayList<String> matches = results
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         stopRecord();
+        speech.startListening(recognizerIntent);
+        speech.cancel();
         StringBuilder text = new StringBuilder();
         if (matches != null) {
             for (String result : matches) {
@@ -334,16 +421,14 @@ public class Game extends AppCompatActivity implements
             }
         }
         recording = text.toString();
-        recording.replace("  ","");
+        recording.replace("  ", "");
         returnedText.setText(recording);
-        speech.startListening(recognizerIntent);
-        speech.cancel();
         verification();
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
-        Log.i(LOG_TAG, "onRmsChanged: " + rmsdB);
+//        Log.i(LOG_TAG, "onRmsChanged: " + rmsdB);
         progressBar.setProgress((int) rmsdB);
     }
 
@@ -379,6 +464,7 @@ public class Game extends AppCompatActivity implements
 
     private static void startRecord() {
         record = true;
+        muteAudio(true);
         mic.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setIndeterminate(true);
@@ -395,15 +481,9 @@ public class Game extends AppCompatActivity implements
             record = false;
             speech.stopListening();
             speech.cancel();
-//            speech.destroy();
-//            speech = SpeechRecognizer.createSpeechRecognizer(this);
-//            speech.setRecognitionListener(this);
-//            speech.startListening(recognizerIntent);
-//            speech.cancel();
             mic.setVisibility(View.INVISIBLE);
             progressBar.setIndeterminate(false);
             progressBar.setVisibility(View.INVISIBLE);
-//            speech.stopListening();
             Log.i(LOG_TAG, "STOP LISTENING");
         }
     }

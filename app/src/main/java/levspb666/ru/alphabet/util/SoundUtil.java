@@ -1,6 +1,8 @@
 package levspb666.ru.alphabet.util;
 
 import android.content.Context;
+import android.media.AudioManager;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import static levspb666.ru.alphabet.Action.BALLOON;
 import static levspb666.ru.alphabet.Action.LETTER;
 import static levspb666.ru.alphabet.Action.NEXT;
 import static levspb666.ru.alphabet.Action.NOTHING;
+import static levspb666.ru.alphabet.Game.audioManager;
 import static levspb666.ru.alphabet.Game.canContinue;
 import static levspb666.ru.alphabet.Game.closeView;
 import static levspb666.ru.alphabet.Game.goLetter;
@@ -112,5 +115,27 @@ public class SoundUtil {
         alphabetMap.put("Э", R.raw.a31);
         alphabetMap.put("Ю", R.raw.a32);
         alphabetMap.put("Я", R.raw.a33);
+    }
+
+
+    public static void muteAudio(Boolean mute) {
+        try {
+            // mute (or) un mute audio based on status
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, mute ? AudioManager.ADJUST_MUTE : AudioManager.ADJUST_UNMUTE, 0);
+            } else {
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, mute);
+            }
+        } catch (Exception e) {
+            Log.e("MUTE", e.getMessage());
+            if (audioManager == null) return;
+
+            // un mute the audio if there is an exception
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
+            } else {
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+            }
+        }
     }
 }
