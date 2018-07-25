@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.plattysoft.leonids.ParticleSystem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -260,20 +259,6 @@ public class Game extends AppCompatActivity implements
         }).start();
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        switch (requestCode) {
-//            case REQUEST_RECORD_PERMISSION:
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    speech.startListening(recognizerIntent);
-//                } else {
-//                    Toast.makeText(Game.this, "Permission Denied!", Toast
-//                            .LENGTH_SHORT).show();
-//                }
-//        }
-//    }
-
     @Override
     protected void onStop() {
         muteAudio(false);
@@ -308,12 +293,12 @@ public class Game extends AppCompatActivity implements
     public void onBeginningOfSpeech() {
         Log.i(LOG_TAG, "onBeginningOfSpeech");
         progressBar.setIndeterminate(false);
-        progressBar.setMax(8);
+        progressBar.setMax(9);
     }
 
     @Override
     public void onBufferReceived(byte[] buffer) {
-        Log.i(LOG_TAG, "onBufferReceived: " + Arrays.toString(buffer));
+//        Log.i(LOG_TAG, "onBufferReceived: " + Arrays.toString(buffer));
     }
 
     @Override
@@ -326,9 +311,9 @@ public class Game extends AppCompatActivity implements
         String errorMessage = getErrorText(errorCode);
         Log.d(LOG_TAG, "FAILED " + errorMessage);
         if (canContinue && !isNextClick) {
-            if (errorCode == SpeechRecognizer.ERROR_CLIENT){
+            if (errorCode == SpeechRecognizer.ERROR_CLIENT) {
                 speech.cancel();
-            }else {
+            } else {
                 stopRecord();
                 muteAudio(false);
                 if (errorCode == SpeechRecognizer.ERROR_NO_MATCH && next.isEnabled()) {
