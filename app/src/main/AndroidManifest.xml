@@ -10,15 +10,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/icon2"
+        android:icon="@drawable/icon_square"
         android:label="@string/app_name"
         android:logo="@drawable/trey"
-        android:roundIcon="@drawable/icon2"
+        android:roundIcon="@drawable/icon_share"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name="levspb666.ru.alphabet.MainActivity"
-            android:icon="@drawable/icon2">
+            android:icon="@drawable/icon_square">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,10 +26,10 @@
         </activity>
         <activity
             android:name="levspb666.ru.alphabet.Game"
-            android:icon="@drawable/icon2" />
+            android:icon="@drawable/icon_square" />
         <activity
             android:name="levspb666.ru.alphabet.Settings"
-            android:icon="@drawable/icon2" />
+            android:icon="@drawable/icon_square" />
     </application>
 
 </manifest>
