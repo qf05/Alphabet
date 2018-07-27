@@ -127,6 +127,7 @@ public class Game extends AppCompatActivity implements
         speech.setRecognitionListener(this);
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "PackageName");
         anim = AnimationUtils.loadAnimation(Game.this, R.anim.letter);
         activityGame = Game.this;
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Учим Буквы</string>
+    <string name="police"><a href="https://sites.google.com/view/learning-letters">
+        <u>Политика \nконфиденциальности</u></a></string>
 </resources>

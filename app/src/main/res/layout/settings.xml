@@ -119,4 +119,18 @@
         android:gravity="center"
         android:onClick="back"
         android:paddingBottom="5dp" />
+
+    <TextView
+        android:id="@+id/police"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/police"
+        android:textColor="#0000f0"
+        android:gravity="end"
+        android:textSize="11sp"
+        android:layout_margin="5dp"
+        android:textStyle="italic"
+        />
 </RelativeLayout>

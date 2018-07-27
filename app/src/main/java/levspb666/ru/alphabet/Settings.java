@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +86,8 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
         if (fon) {
             imageView.setImageDrawable(drawableFon);
         }
+        TextView t2 = (TextView) findViewById(R.id.police);
+        t2.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override

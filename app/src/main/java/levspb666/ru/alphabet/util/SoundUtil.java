@@ -91,7 +91,7 @@ public class SoundUtil {
         alphabetMap.put("Ё", R.raw.a7);
         alphabetMap.put("Ж", R.raw.a8);
         alphabetMap.put("З", R.raw.a9);
-        alphabetMap.put("И", R.raw.a1);
+        alphabetMap.put("И", R.raw.a10);
         alphabetMap.put("Й", R.raw.a11);
         alphabetMap.put("К", R.raw.a12);
         alphabetMap.put("Л", R.raw.a13);
@@ -102,7 +102,7 @@ public class SoundUtil {
         alphabetMap.put("Р", R.raw.a18);
         alphabetMap.put("С", R.raw.a19);
         alphabetMap.put("Т", R.raw.a20);
-        alphabetMap.put("У", R.raw.a2);
+        alphabetMap.put("У", R.raw.a21);
         alphabetMap.put("Ф", R.raw.a22);
         alphabetMap.put("Х", R.raw.a23);
         alphabetMap.put("Ц", R.raw.a24);
