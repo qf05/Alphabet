@@ -1,7 +1,7 @@
 # Alphabet
 ## Детская игра "Учимся говорить буквы".
 
-#### Ссылка на Google Play: 
+#### Ссылка на Google Play: https://play.google.com/store/apps/details?id=levspb666.ru.alphabet
 
 ### Описание:
 
@@ -33,3 +33,7 @@
 
 ![Alt-текст](https://lh3.googleusercontent.com/jHAu6Dvj-V-JfB8OyxlC8JtEgy-T1R_KM0eKFgoQWS4ZNd-sndI-O3A_8fyjhA-e-W5k=w1366-h658-rw "О")
 ![Alt-текст](https://lh3.googleusercontent.com/7GOg9D3XvnxriA7kG0ZSDJ2Vwa4PQrJoq5dbvdlPTDtf65waIZ1UHv57s-C0IPX898E=w1366-h658-rw "О")
+![Alt-текст](https://lh3.googleusercontent.com/ZzFOalfRRLjkUlTKchnGT-8hYMccIkJv7Lvtg6ynz6bfjvj0kdnmsyLjKTwid9gYTQ=w1366-h658-rw "О")
+![Alt-текст](https://lh3.googleusercontent.com/bfC8hHIc3yuOOGX5taHGSJZih9mqfwPFCCLKVWGJeOaNXLndzLwBwIth2S4YIU84N0w=w1366-h658-rw "О")
+![Alt-текст](https://lh3.googleusercontent.com/nNejpmbE5H22vam4xtxVrGm2WbRgNGbc29ZJmPy_WtxUJopWQk_ipTW9F4mJ2Hi_3iQ=w1366-h658-rw "О")
+![Alt-текст](https://lh3.googleusercontent.com/e5jY3oZHDHizldoPqdFUylzuO09G7Z8Xcl5ybnM3yW-ON6bcnxN68viWb_XJJ5eE=w1366-h658-rw "О")
