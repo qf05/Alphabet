@@ -1,4 +1,4 @@
-package levspb666.ru.alphabet;
+package com.levspb666.alphabet;
 
 import android.Manifest;
 import android.app.Activity;
@@ -35,27 +35,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static levspb666.ru.alphabet.Action.NOTHING;
-import static levspb666.ru.alphabet.Action.START;
-import static levspb666.ru.alphabet.Action.YES;
-import static levspb666.ru.alphabet.Settings.colorLetter;
-import static levspb666.ru.alphabet.Settings.countBalloons;
-import static levspb666.ru.alphabet.Settings.drawableFon;
-import static levspb666.ru.alphabet.Settings.excludeLetters;
-import static levspb666.ru.alphabet.Settings.fon;
-import static levspb666.ru.alphabet.Settings.infoFon;
-import static levspb666.ru.alphabet.Settings.infoOn;
-import static levspb666.ru.alphabet.util.BalloonUtil.balloonLauncher;
-import static levspb666.ru.alphabet.util.BalloonUtil.observer;
-import static levspb666.ru.alphabet.util.GameUtil.alphabetHard;
-import static levspb666.ru.alphabet.util.GameUtil.alphabetLight;
-import static levspb666.ru.alphabet.util.GameUtil.getCroppedBitmap;
-import static levspb666.ru.alphabet.util.GameUtil.getErrorText;
-import static levspb666.ru.alphabet.util.GameUtil.getletter;
-import static levspb666.ru.alphabet.util.GameUtil.match;
-import static levspb666.ru.alphabet.util.SoundUtil.muteAudio;
-import static levspb666.ru.alphabet.util.SoundUtil.play;
-import static levspb666.ru.alphabet.util.SoundUtil.poolPlayers;
+import static com.levspb666.alphabet.Action.NOTHING;
+import static com.levspb666.alphabet.Action.START;
+import static com.levspb666.alphabet.Action.YES;
+import static com.levspb666.alphabet.Settings.colorLetter;
+import static com.levspb666.alphabet.Settings.countBalloons;
+import static com.levspb666.alphabet.Settings.drawableFon;
+import static com.levspb666.alphabet.Settings.excludeLetters;
+import static com.levspb666.alphabet.Settings.fon;
+import static com.levspb666.alphabet.Settings.infoFon;
+import static com.levspb666.alphabet.Settings.infoOn;
+import static com.levspb666.alphabet.util.BalloonUtil.balloonLauncher;
+import static com.levspb666.alphabet.util.BalloonUtil.observer;
+import static com.levspb666.alphabet.util.GameUtil.alphabetHard;
+import static com.levspb666.alphabet.util.GameUtil.alphabetLight;
+import static com.levspb666.alphabet.util.GameUtil.getCroppedBitmap;
+import static com.levspb666.alphabet.util.GameUtil.getErrorText;
+import static com.levspb666.alphabet.util.GameUtil.getletter;
+import static com.levspb666.alphabet.util.GameUtil.match;
+import static com.levspb666.alphabet.util.SoundUtil.muteAudio;
+import static com.levspb666.alphabet.util.SoundUtil.play;
+import static com.levspb666.alphabet.util.SoundUtil.poolPlayers;
 
 public class Game extends AppCompatActivity implements
         RecognitionListener, Balloon.BalloonListener {

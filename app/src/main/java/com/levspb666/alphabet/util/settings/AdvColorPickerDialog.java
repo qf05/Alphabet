@@ -1,4 +1,4 @@
-package levspb666.ru.alphabet.util.settings;
+package com.levspb666.alphabet.util.settings;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import levspb666.ru.alphabet.R;
+import com.levspb666.alphabet.R;
 
 public class AdvColorPickerDialog extends Dialog {
 

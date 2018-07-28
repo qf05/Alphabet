@@ -1,19 +1,19 @@
-package levspb666.ru.alphabet.util;
+package com.levspb666.alphabet.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.ViewTreeObserver;
 
+import com.levspb666.alphabet.Balloon;
+
 import java.util.Random;
 
-import levspb666.ru.alphabet.Balloon;
-
-import static levspb666.ru.alphabet.Game.canContinue;
-import static levspb666.ru.alphabet.Game.mBalloons;
-import static levspb666.ru.alphabet.Game.mContentView;
-import static levspb666.ru.alphabet.Settings.countBalloons;
-import static levspb666.ru.alphabet.Settings.speedBalloons;
-import static levspb666.ru.alphabet.util.GameUtil.mBalloonColors;
+import static com.levspb666.alphabet.Game.canContinue;
+import static com.levspb666.alphabet.Game.mBalloons;
+import static com.levspb666.alphabet.Game.mContentView;
+import static com.levspb666.alphabet.Settings.countBalloons;
+import static com.levspb666.alphabet.Settings.speedBalloons;
+import static com.levspb666.alphabet.util.GameUtil.mBalloonColors;
 
 public class BalloonUtil {
 

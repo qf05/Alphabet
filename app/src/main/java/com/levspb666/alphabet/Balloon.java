@@ -1,4 +1,4 @@
-package levspb666.ru.alphabet;
+package com.levspb666.alphabet;
 
 
 import android.animation.Animator;
@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 
-import levspb666.ru.alphabet.util.PixelHelper;
+import com.levspb666.alphabet.util.PixelHelper;
 
 public class Balloon extends android.support.v7.widget.AppCompatImageView implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
 

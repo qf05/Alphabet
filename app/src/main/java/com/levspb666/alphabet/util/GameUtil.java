@@ -1,4 +1,4 @@
-package levspb666.ru.alphabet.util;
+package com.levspb666.alphabet.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static levspb666.ru.alphabet.Game.letter;
-import static levspb666.ru.alphabet.Settings.countLetters;
+import static com.levspb666.alphabet.Game.letter;
+import static com.levspb666.alphabet.Settings.countLetters;
 
 public class GameUtil {
 

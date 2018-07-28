@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="levspb666.ru.alphabet">
+    package="com.levspb666.alphabet">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="levspb666.ru.alphabet.MainActivity"
+            android:name="com.levspb666.alphabet.MainActivity"
             android:icon="@drawable/icon_square">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,10 +25,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="levspb666.ru.alphabet.Game"
+            android:name="com.levspb666.alphabet.Game"
             android:icon="@drawable/icon_square" />
         <activity
-            android:name="levspb666.ru.alphabet.Settings"
+            android:name="com.levspb666.alphabet.Settings"
             android:icon="@drawable/icon_square" />
     </application>
 

@@ -1,4 +1,4 @@
-package levspb666.ru.alphabet;
+package com.levspb666.alphabet;
 
 public enum Action {
     YES,

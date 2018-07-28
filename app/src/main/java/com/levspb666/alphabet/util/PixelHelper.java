@@ -1,4 +1,4 @@
-package levspb666.ru.alphabet.util;
+package com.levspb666.alphabet.util;
 
 import android.content.Context;
 import android.util.TypedValue;

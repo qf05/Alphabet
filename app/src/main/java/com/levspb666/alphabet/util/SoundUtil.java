@@ -1,31 +1,31 @@
-package levspb666.ru.alphabet.util;
+package com.levspb666.alphabet.util;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Build;
 import android.util.Log;
 
+import com.levspb666.alphabet.Action;
+import com.levspb666.alphabet.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import levspb666.ru.alphabet.Action;
-import levspb666.ru.alphabet.R;
-
-import static levspb666.ru.alphabet.Action.BALLOON;
-import static levspb666.ru.alphabet.Action.LETTER;
-import static levspb666.ru.alphabet.Action.NEXT;
-import static levspb666.ru.alphabet.Action.NOTHING;
-import static levspb666.ru.alphabet.Game.audioManager;
-import static levspb666.ru.alphabet.Game.canContinue;
-import static levspb666.ru.alphabet.Game.closeView;
-import static levspb666.ru.alphabet.Game.goLetter;
-import static levspb666.ru.alphabet.Game.isNextClick;
-import static levspb666.ru.alphabet.Game.letter;
-import static levspb666.ru.alphabet.Game.start1;
-import static levspb666.ru.alphabet.util.BalloonUtil.startLevel;
-import static levspb666.ru.alphabet.util.SoundPoolPlayer.create;
+import static com.levspb666.alphabet.Action.BALLOON;
+import static com.levspb666.alphabet.Action.LETTER;
+import static com.levspb666.alphabet.Action.NEXT;
+import static com.levspb666.alphabet.Action.NOTHING;
+import static com.levspb666.alphabet.Game.audioManager;
+import static com.levspb666.alphabet.Game.canContinue;
+import static com.levspb666.alphabet.Game.closeView;
+import static com.levspb666.alphabet.Game.goLetter;
+import static com.levspb666.alphabet.Game.isNextClick;
+import static com.levspb666.alphabet.Game.letter;
+import static com.levspb666.alphabet.Game.start1;
+import static com.levspb666.alphabet.util.BalloonUtil.startLevel;
+import static com.levspb666.alphabet.util.SoundPoolPlayer.create;
 
 public class SoundUtil {
 

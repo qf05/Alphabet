@@ -1,4 +1,4 @@
-package levspb666.ru.alphabet.util.settings;
+package com.levspb666.alphabet.util.settings;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -14,9 +14,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static levspb666.ru.alphabet.Settings.USER_FON_NAME;
-import static levspb666.ru.alphabet.Settings.USER_FON_PATH;
-import static levspb666.ru.alphabet.Settings.fon;
+import static com.levspb666.alphabet.Settings.USER_FON_NAME;
+import static com.levspb666.alphabet.Settings.USER_FON_PATH;
+import static com.levspb666.alphabet.Settings.fon;
 
 public class FileManager {
 
