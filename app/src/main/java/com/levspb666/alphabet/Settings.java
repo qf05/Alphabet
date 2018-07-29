@@ -77,7 +77,6 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
     private CheckBox infoFonBox;
     private List<View> buttons;
     boolean screen;
-    private static TextView test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +99,6 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
         if (!hasPermissions(this, WRITE_EXTERNAL_STORAGE)) {
             askForPermission( this, WRITE_EXTERNAL_STORAGE);
         }
-        test = findViewById(R.id.test);
     }
 
     @Override
@@ -279,20 +277,19 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
                     try {
                         Uri selectedImageUri = imageReturnedIntent.getData();
                         FileManager.copyImg(selectedImageUri, getContentResolver());
+                        drawableFon = Drawable.createFromPath(getApplicationInfo().dataDir + "/fon" + USER_FON_NAME);
+                        imageView.setImageDrawable(drawableFon);
                         if (!fon) {
                             fon = true;
                             SharedPreferences.Editor editor = settings.edit();
                             editor.putBoolean(USER_FON, true);
                             editor.apply();
                         }
-                        drawableFon = Drawable.createFromPath(getApplicationInfo().dataDir + "/fon" + USER_FON_NAME);
-                        imageView.setImageDrawable(drawableFon);
-                        Intent intent = new Intent(Settings.this, Settings.class);
-                        startActivity(intent);
-                        finish();
+//                        Intent intent = new Intent(Settings.this, Settings.class);
+//                        startActivity(intent);
+//                        finish();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        tests(e.getMessage());
                         Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show();
                         fon = false;
                         SharedPreferences.Editor editor = settings.edit();
@@ -305,10 +302,6 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
                     requestDialog(Settings.this, this);
                 }
         }
-    }
-
-    public static void tests(String s){
-        test.setText(test.getText() + "\n"+s);
     }
 
     public void color(View view) {
@@ -579,6 +572,10 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
                 settings.edit().clear().apply();
                 try {
                     FileManager.deleteFile(getApplicationInfo().dataDir + "/fon" + USER_FON_NAME);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
                     FileManager.deleteFile(getApplicationInfo().dataDir + "/shared_prefs/" + ALPHABET_SETTINGS + ".xml");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -595,6 +592,7 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
                 infoFon = false;
                 Intent intent = new Intent(Settings.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         view.startAnimation(anim);
@@ -618,7 +616,6 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
             @Override
             public void onAnimationEnd(Animation animation) {
                 onBackPressed();
-                finish();
             }
         });
         view.startAnimation(anim);

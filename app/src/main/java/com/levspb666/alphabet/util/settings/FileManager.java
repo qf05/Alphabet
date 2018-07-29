@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import static com.levspb666.alphabet.Settings.USER_FON_NAME;
 import static com.levspb666.alphabet.Settings.USER_FON_PATH;
 import static com.levspb666.alphabet.Settings.fon;
-import static com.levspb666.alphabet.Settings.tests;
 
 public class FileManager {
 
@@ -52,7 +51,6 @@ public class FileManager {
 
     public static void copyImg(Uri uri, ContentResolver resolver) throws Exception {
         String selectedImagePath = getPath(uri, resolver);
-        tests(selectedImagePath);
         if (fon) {
             deleteFile(USER_FON_PATH + USER_FON_NAME);
         }
@@ -89,8 +87,6 @@ public class FileManager {
         String[] projection = {MediaStore.MediaColumns.DATA};
         Cursor cursor = resolver.query(uri, projection, null, null, null);
         if (cursor != null) {
-            //HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            //THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
             String filePath = cursor.getString(columnIndex);

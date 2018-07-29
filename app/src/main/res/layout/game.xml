@@ -11,30 +11,30 @@
         android:scaleType="centerCrop"
         android:src="@drawable/play2" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="40dp">
-
-        <ImageView
-            android:id="@+id/mic"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:src="@drawable/mic" />
+        android:layout_height="140dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp">
 
         <ProgressBar
             android:id="@+id/progressBar1"
-            android:indeterminateDrawable="@drawable/progressbar"
-            android:progressDrawable="@drawable/progressbar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="center" />
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/mic"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/mic" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/infoText"
@@ -66,7 +66,7 @@
             android:id="@+id/letter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="-55dp"
+            android:layout_marginTop="-50dp"
             android:animateLayoutChanges="true"
             android:gravity="center"
             android:shadowColor="#000000"
