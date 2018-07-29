@@ -17,19 +17,21 @@ import java.io.OutputStream;
 import static com.levspb666.alphabet.Settings.USER_FON_NAME;
 import static com.levspb666.alphabet.Settings.USER_FON_PATH;
 import static com.levspb666.alphabet.Settings.fon;
+import static com.levspb666.alphabet.Settings.tests;
 
 public class FileManager {
 
-    public static void deleteFile(String inputPath) {
+    public static void deleteFile(String inputPath) throws Exception {
         try {
             // delete the original file
             new File(inputPath).delete();
         } catch (Exception e) {
             Log.e("file", e.getMessage());
+            throw new Exception("delete");
         }
     }
 
-    public static void copyFile(String inputPath, String outputPath) {
+    public static void copyFile(String inputPath, String outputPath) throws Exception {
         File dir = new File(outputPath);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -44,12 +46,13 @@ public class FileManager {
             out.flush();
         } catch (Exception e) {
             Log.e("file", e.getMessage());
+            throw new Exception("copy");
         }
     }
 
-    public static void copyImg(Uri uri, ContentResolver resolver){
-
+    public static void copyImg(Uri uri, ContentResolver resolver) throws Exception {
         String selectedImagePath = getPath(uri, resolver);
+        tests(selectedImagePath);
         if (fon) {
             deleteFile(USER_FON_PATH + USER_FON_NAME);
         }
@@ -68,11 +71,14 @@ public class FileManager {
             options.inSampleSize = simpleSize;
             options.inJustDecodeBounds = false;
             Bitmap bitmap =  BitmapFactory.decodeFile(selectedImagePath,options);
+            File dir = new File(USER_FON_PATH);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
             try(FileOutputStream outputStream = new FileOutputStream(USER_FON_PATH + USER_FON_NAME)) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
-                outputStream.close();
             }catch (Exception e){
-                Log.e("file", e.getMessage());
+                throw new Exception("outputStream\n"+ e.getMessage());
             }
         }else {
             copyFile(selectedImagePath, USER_FON_PATH);

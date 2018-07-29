@@ -1,5 +1,7 @@
 package com.levspb666.alphabet;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -69,18 +71,6 @@ public class MainActivity extends AppCompatActivity {
         if (mSettings.contains(EXCLUDE_LETTERS)) {
             excludeLetters = mSettings.getBoolean(EXCLUDE_LETTERS, true);
         }
-        ImageView view = findViewById(R.id.mainFon);
-        if (mSettings.contains(USER_FON)) {
-            fon = mSettings.getBoolean(USER_FON, false);
-            if (fon) {
-                drawableFon = Drawable.createFromPath(getApplicationInfo().dataDir + "/fon" + USER_FON_NAME);
-                view.setImageDrawable(drawableFon);
-            } else {
-                view.setImageResource(R.drawable.play2);
-            }
-        } else {
-            view.setImageResource(R.drawable.play2);
-        }
         if (mSettings.contains(SPEED_BALLOONS)) {
             speedBalloons = mSettings.getInt(SPEED_BALLOONS, 4);
         }
@@ -93,19 +83,30 @@ public class MainActivity extends AppCompatActivity {
         if (mSettings.contains(INFO_FON)) {
             infoFon = mSettings.getBoolean(INFO_FON, false);
         }
-        if (!hasPermissions()) {
-            askForPermission();
+        if (mSettings.contains(USER_FON)) {
+            fon = mSettings.getBoolean(USER_FON, false);
+        }
+        if (!hasPermissions(this, RECORD_AUDIO)) {
+            askForPermission( this, RECORD_AUDIO);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        ImageView view = findViewById(R.id.mainFon);
+        if (fon) {
+            drawableFon = Drawable.createFromPath(getApplicationInfo().dataDir + "/fon" + USER_FON_NAME);
+            view.setImageDrawable(drawableFon);
+        } else {
+            view.setImageResource(R.drawable.play2);
+        }
         on = findViewById(R.id.on1);
         settings = findViewById(R.id.settings);
         settings.setClickable(true);
         on.setClickable(true);
         closeView = false;
+
     }
 
     public void on(View view) {
@@ -167,9 +168,9 @@ public class MainActivity extends AppCompatActivity {
         settings.startAnimation(anim);
     }
 
-    private void askForPermission() {
-        String[] permissions = new String[]{RECORD_AUDIO};
-        ActivityCompat.requestPermissions(this, permissions, 120);
+    public static void askForPermission(Activity activity, String permission) {
+        String[] permissions = new String[]{permission};
+        ActivityCompat.requestPermissions(activity, permissions, 120);
     }
 
     @Override
@@ -182,35 +183,41 @@ public class MainActivity extends AppCompatActivity {
                 if (permission.equals(RECORD_AUDIO)) {
                     if (grantResult != PackageManager.PERMISSION_GRANTED) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestDialog();
+                            requestDialog(MainActivity.this, this);
                         }
                     }
                 }
             }
-        } else requestDialog();
+        } else requestDialog(MainActivity.this,this);
     }
 
-    private void requestDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+    public static void requestDialog(Context context, Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("ВНИМАНИЕ!")
-                .setMessage("ВКЛЮЧИТЕ ВСЕ НЕОБХОДИМЫЕ РАЗРЕШЕНИЯ ПРИЛОЖЕНИЯ!")
+                .setMessage("ВКЛЮЧИТЕ ВСЕ НЕОБХОДИМЫЕ РАЗРЕШЕНИЯ ДЛЯ ПРИЛОЖЕНИЯ!")
                 .setCancelable(false)
-                .setNegativeButton("ОК",
+                .setNegativeButton("ВЫХОД",
                         (dialog, id) -> {
-                            openApplicationSettings();
+                            dialog.cancel();
+                            activity.finish();
+                        })
+                .setPositiveButton("ОК",
+                        (dialog, id) -> {
+                            openApplicationSettings(activity);
                             dialog.cancel();
                         });
         AlertDialog alert = builder.create();
         alert.show();
     }
 
-    public void openApplicationSettings() {
-        Intent appSettingsIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
-        startActivityForResult(appSettingsIntent, 121);
+    public static void openApplicationSettings(Activity activity) {
+        Intent appSettingsIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + activity.getPackageName()));
+        activity.startActivityForResult(appSettingsIntent, 121);
     }
 
-    private boolean hasPermissions() {
-        int permissionCheck = ActivityCompat.checkSelfPermission(this, RECORD_AUDIO);
+    public static boolean hasPermissions(Context context, String permission) {
+        int permissionCheck = ActivityCompat.checkSelfPermission(context, permission);
         return permissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -219,8 +226,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch (requestCode) {
             case 121:
-                if (!hasPermissions()) {
-                    requestDialog();
+                if (!hasPermissions(this, RECORD_AUDIO)) {
+                    requestDialog(MainActivity.this, this);
                 }
         }
     }

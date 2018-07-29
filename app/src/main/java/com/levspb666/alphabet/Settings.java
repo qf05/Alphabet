@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
@@ -24,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.levspb666.alphabet.util.settings.AdvColorPickerDialog;
 import com.levspb666.alphabet.util.settings.FileManager;
@@ -34,6 +34,9 @@ import java.util.List;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.levspb666.alphabet.Action.NOTHING;
+import static com.levspb666.alphabet.MainActivity.askForPermission;
+import static com.levspb666.alphabet.MainActivity.hasPermissions;
+import static com.levspb666.alphabet.MainActivity.requestDialog;
 import static com.levspb666.alphabet.util.SoundUtil.play;
 
 
@@ -74,6 +77,7 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
     private CheckBox infoFonBox;
     private List<View> buttons;
     boolean screen;
+    private static TextView test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +97,10 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
         }
         TextView t2 = (TextView) findViewById(R.id.police);
         t2.setMovementMethod(LinkMovementMethod.getInstance());
-        if (!hasPermissions()) {
-            askForPermission();
+        if (!hasPermissions(this, WRITE_EXTERNAL_STORAGE)) {
+            askForPermission( this, WRITE_EXTERNAL_STORAGE);
         }
+        test = findViewById(R.id.test);
     }
 
     @Override
@@ -287,13 +292,23 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
                         finish();
                     } catch (Exception e) {
                         e.printStackTrace();
+                        tests(e.getMessage());
+                        Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show();
+                        fon = false;
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putBoolean(USER_FON, false);
+                        editor.apply();
                     }
                 }
-            case 115:
-                if (!hasPermissions()) {
-                    requestDialog();
+            case 121:
+                if (!hasPermissions(this, WRITE_EXTERNAL_STORAGE)) {
+                    requestDialog(Settings.this, this);
                 }
         }
+    }
+
+    public static void tests(String s){
+        test.setText(test.getText() + "\n"+s);
     }
 
     public void color(View view) {
@@ -562,8 +577,12 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
             @Override
             public void onAnimationEnd(Animation animation) {
                 settings.edit().clear().apply();
-                FileManager.deleteFile(getApplicationInfo().dataDir + "/fon" + USER_FON_NAME);
-                FileManager.deleteFile(getApplicationInfo().dataDir + "/shared_prefs/" + ALPHABET_SETTINGS + ".xml");
+                try {
+                    FileManager.deleteFile(getApplicationInfo().dataDir + "/fon" + USER_FON_NAME);
+                    FileManager.deleteFile(getApplicationInfo().dataDir + "/shared_prefs/" + ALPHABET_SETTINGS + ".xml");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 dialog.cancel();
                 dialog = null;
                 colorLetter = Color.RED;
@@ -634,50 +653,21 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
         }
     };
 
-    private void askForPermission() {
-        String[] permissions = new String[]{WRITE_EXTERNAL_STORAGE};
-        ActivityCompat.requestPermissions(this, permissions, 112);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 112) {
+        if (requestCode == 120) {
             for (int i = 0; i < permissions.length; i++) {
                 String permission = permissions[i];
                 int grantResult = grantResults[i];
                 if (permission.equals(WRITE_EXTERNAL_STORAGE)) {
                     if (grantResult != PackageManager.PERMISSION_GRANTED) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestDialog();
+                            requestDialog(Settings.this, this);
                         }
                     }
                 }
             }
-        } else requestDialog();
-    }
-
-    private void requestDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Settings.this);
-        builder.setTitle("ВНИМАНИЕ!")
-                .setMessage("ВКЛЮЧИТЕ ВСЕ НЕОБХОДИМЫЕ РАЗРЕШЕНИЯ ПРИЛОЖЕНИЯ!")
-                .setCancelable(false)
-                .setNegativeButton("ОК",
-                        (dialog, id) -> {
-                            openApplicationSettings();
-                            dialog.cancel();
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    public void openApplicationSettings() {
-        Intent appSettingsIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
-        startActivityForResult(appSettingsIntent, 115);
-    }
-
-    private boolean hasPermissions() {
-        int permissionCheck = ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-        return permissionCheck == PackageManager.PERMISSION_GRANTED;
+        } else requestDialog(Settings.this, this);
     }
 }

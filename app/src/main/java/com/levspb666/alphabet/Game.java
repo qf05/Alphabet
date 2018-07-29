@@ -1,20 +1,18 @@
 package com.levspb666.alphabet;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -35,9 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static android.Manifest.permission.RECORD_AUDIO;
 import static com.levspb666.alphabet.Action.NOTHING;
 import static com.levspb666.alphabet.Action.START;
 import static com.levspb666.alphabet.Action.YES;
+import static com.levspb666.alphabet.MainActivity.askForPermission;
+import static com.levspb666.alphabet.MainActivity.hasPermissions;
+import static com.levspb666.alphabet.MainActivity.requestDialog;
 import static com.levspb666.alphabet.Settings.colorLetter;
 import static com.levspb666.alphabet.Settings.countBalloons;
 import static com.levspb666.alphabet.Settings.drawableFon;
@@ -61,7 +63,6 @@ public class Game extends AppCompatActivity implements
         RecognitionListener, Balloon.BalloonListener {
 
     private static final int NUM_PARTICLES = 30;
-    private static final int REQUEST_RECORD_PERMISSION = 100;
 
     public static List<Balloon> mBalloons = new ArrayList<>();
     public static ViewGroup mContentView;
@@ -83,7 +84,8 @@ public class Game extends AppCompatActivity implements
     public static boolean isNextClick;
     public static Activity activityGame;
     public static AudioManager audioManager;
-    private static Handler restart = new Handler();
+    private static boolean record = false;
+    private static Animation animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,7 @@ public class Game extends AppCompatActivity implements
 
         observer();
         progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setIndeterminate(false);
         mic.setVisibility(View.INVISIBLE);
         closeView = false;
         speech = SpeechRecognizer.createSpeechRecognizer(this);
@@ -131,6 +134,10 @@ public class Game extends AppCompatActivity implements
         anim = AnimationUtils.loadAnimation(Game.this, R.anim.letter);
         activityGame = Game.this;
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        animation = AnimationUtils.loadAnimation(Game.this, R.anim.mic);
+        if (!hasPermissions(this, RECORD_AUDIO)) {
+            askForPermission(this, RECORD_AUDIO);
+        }
         goLetter(Game.this);
     }
 
@@ -144,10 +151,9 @@ public class Game extends AppCompatActivity implements
         isNextClick = true;
         next.setEnabled(false);
         stopRecord();
-        speech.cancel();
         Animation anim = AnimationUtils.loadAnimation(Game.this, R.anim.click);
-        new Thread(() -> play(Game.this, R.raw.click, YES)).start();
         next.startAnimation(anim);
+        play(Game.this, R.raw.click, YES);
     }
 
     public static void goLetter(Context context) {
@@ -180,10 +186,10 @@ public class Game extends AppCompatActivity implements
     }
 
     public static void start1() {
+        startRecord();
         next.setAlpha(1f);
         recording = "";
         Log.i(LOG_TAG, "start");
-        restart.postDelayed(Game::startRecord, 500);
         isNextClick = false;
         next.setEnabled(true);
     }
@@ -293,8 +299,7 @@ public class Game extends AppCompatActivity implements
     @Override
     public void onBeginningOfSpeech() {
         Log.i(LOG_TAG, "onBeginningOfSpeech");
-        progressBar.setIndeterminate(false);
-        progressBar.setMax(9);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -304,6 +309,7 @@ public class Game extends AppCompatActivity implements
 
     @Override
     public void onEndOfSpeech() {
+        progressBar.setVisibility(View.INVISIBLE);
         Log.i(LOG_TAG, "onEndOfSpeech");
     }
 
@@ -313,7 +319,8 @@ public class Game extends AppCompatActivity implements
         Log.d(LOG_TAG, "FAILED " + errorMessage);
         if (canContinue && !isNextClick) {
             if (errorCode == SpeechRecognizer.ERROR_CLIENT) {
-                speech.cancel();
+//                speech.stopListening();
+//                speech.cancel();
             } else {
                 stopRecord();
                 muteAudio(false);
@@ -366,7 +373,7 @@ public class Game extends AppCompatActivity implements
                     stopRecord();
                     muteAudio(false);
                     Toast.makeText(this, "ERROR_SPEECH_TIMEOUT", Toast.LENGTH_LONG).show();
-                    next(new View(this));
+                    start1();
                 }
             }
         } else {
@@ -396,8 +403,6 @@ public class Game extends AppCompatActivity implements
         ArrayList<String> matches = results
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         stopRecord();
-        speech.startListening(recognizerIntent);
-        speech.cancel();
         StringBuilder text = new StringBuilder();
         if (matches != null) {
             for (String result : matches) {
@@ -410,12 +415,14 @@ public class Game extends AppCompatActivity implements
         recording.replace("  ", "");
         returnedText.setText(recording);
         verification();
+//        speech.startListening(recognizerIntent);
+//        stopRecord();
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
 //        Log.i(LOG_TAG, "onRmsChanged: " + rmsdB);
-        progressBar.setProgress((int) rmsdB);
+//        progressBar.setProgress((int) rmsdB);
     }
 
     @Override
@@ -446,31 +453,52 @@ public class Game extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
     }
 
-    private static boolean record = false;
-
     private static void startRecord() {
         record = true;
         muteAudio(true);
-        mic.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setIndeterminate(true);
-        ActivityCompat.requestPermissions
-                (activityGame,
-                        new String[]{Manifest.permission.RECORD_AUDIO},
-                        REQUEST_RECORD_PERMISSION);
         Log.i(LOG_TAG, "START LISTENING");
         speech.startListening(recognizerIntent);
+        mic.setVisibility(View.VISIBLE);
+        mic.startAnimation(animation);
     }
 
     private void stopRecord() {
         if (record) {
             record = false;
+            mic.clearAnimation();
+            mic.setVisibility(View.INVISIBLE);
             speech.stopListening();
             speech.cancel();
-            mic.setVisibility(View.INVISIBLE);
-            progressBar.setIndeterminate(false);
-            progressBar.setVisibility(View.INVISIBLE);
             Log.i(LOG_TAG, "STOP LISTENING");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 120) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                int grantResult = grantResults[i];
+                if (permission.equals(RECORD_AUDIO)) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            requestDialog(Game.this, this);
+                        }
+                    }
+                }
+            }
+        } else requestDialog(Game.this, this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch (requestCode) {
+            case 121:
+                if (!hasPermissions(this, RECORD_AUDIO)) {
+                    requestDialog(Game.this, this);
+                }
         }
     }
 }
