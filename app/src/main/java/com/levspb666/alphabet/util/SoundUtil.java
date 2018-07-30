@@ -18,6 +18,7 @@ import static com.levspb666.alphabet.Action.LETTER;
 import static com.levspb666.alphabet.Action.NEXT;
 import static com.levspb666.alphabet.Action.NOTHING;
 import static com.levspb666.alphabet.Game.audioManager;
+import static com.levspb666.alphabet.Game.back;
 import static com.levspb666.alphabet.Game.canContinue;
 import static com.levspb666.alphabet.Game.closeView;
 import static com.levspb666.alphabet.Game.goLetter;
@@ -71,6 +72,8 @@ public class SoundUtil {
                     }
                     break;
                 case BALLOON:
+                    back.setAlpha(0.1f);
+                    back.setClickable(false);
                     startLevel(context);
                     break;
                 case NOTHING:

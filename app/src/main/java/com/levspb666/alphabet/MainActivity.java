@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     Intent intent = new Intent(MainActivity.this, Game.class);
                     startActivity(intent);
+                    finish();
                 }).start();
             }
         });
@@ -163,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Intent intent = new Intent(MainActivity.this, Settings.class);
                 startActivity(intent);
+                finish();
             }
         });
         settings.startAnimation(anim);

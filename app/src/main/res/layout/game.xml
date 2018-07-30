@@ -3,7 +3,17 @@
     android:id="@+id/speachId"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <Button
+        android:id="@+id/backGame"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/back"
+        android:gravity="center"
+        android:onClick="backGame"
+        android:paddingBottom="5dp" />
     <ImageView
         android:id="@+id/gameFon"
         android:layout_width="match_parent"

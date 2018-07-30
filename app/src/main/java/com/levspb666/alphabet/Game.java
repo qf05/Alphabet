@@ -86,6 +86,7 @@ public class Game extends AppCompatActivity implements
     public static AudioManager audioManager;
     private static boolean record = false;
     private static Animation animation;
+    public static Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,7 @@ public class Game extends AppCompatActivity implements
         activityGame = Game.this;
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         animation = AnimationUtils.loadAnimation(Game.this, R.anim.mic);
+        back = findViewById(R.id.backGame);
         if (!hasPermissions(this, RECORD_AUDIO)) {
             askForPermission(this, RECORD_AUDIO);
         }
@@ -161,6 +163,8 @@ public class Game extends AppCompatActivity implements
         isNextClick = false;
         next.setAlpha(0.1f);
         next.setEnabled(false);
+        back.setAlpha(1f);
+        back.setClickable(true);
         if (excludeLetters) {
             letter = getletter(alphabetLight);
         } else {
@@ -500,5 +504,37 @@ public class Game extends AppCompatActivity implements
                     requestDialog(Game.this, this);
                 }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+    }
+
+    public void backGame(View view) {
+        back.setClickable(false);
+        canContinue = false;
+        isNextClick = false;
+        next.setEnabled(false);
+        stopRecord();
+        Animation anim = AnimationUtils.loadAnimation(Game.this, R.anim.click);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Intent intent = new Intent(Game.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        muteAudio(false);
+        play(Game.this, R.raw.click, NOTHING);
+        back.startAnimation(anim);
     }
 }

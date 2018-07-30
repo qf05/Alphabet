@@ -126,7 +126,8 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Intent intent = new Intent(Settings.this, MainActivity.class);
+        startActivity(intent);
         buttons.clear();
         finish();
     }
@@ -615,7 +616,9 @@ public class Settings extends AppCompatActivity implements AdvColorPickerDialog.
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                onBackPressed();
+                Intent intent = new Intent(Settings.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
         view.startAnimation(anim);
