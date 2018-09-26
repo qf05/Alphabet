@@ -321,69 +321,58 @@ public class Game extends AppCompatActivity implements
     public void onError(int errorCode) {
         String errorMessage = getErrorText(errorCode);
         Log.d(LOG_TAG, "FAILED " + errorMessage);
-        if (canContinue && !isNextClick) {
-            if (errorCode == SpeechRecognizer.ERROR_CLIENT) {
-//                speech.stopListening();
-//                speech.cancel();
-            } else {
-                stopRecord();
-                muteAudio(false);
-                if (errorCode == SpeechRecognizer.ERROR_NO_MATCH && next.isEnabled()) {
-                    returnedText.setText(errorMessage);
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION, new ArrayList<>());
-                    onResults(bundle);
+        if (errorCode != SpeechRecognizer.ERROR_CLIENT) {
+            stopRecord();
+            muteAudio(false);
+            returnedText.setText(errorMessage);
+            if (canContinue && !isNextClick) {
+                if (errorCode == SpeechRecognizer.ERROR_RECOGNIZER_BUSY) {
+                    Toast.makeText(this, "ERROR_RECOGNIZER_BUSY", Toast.LENGTH_LONG).show();
+                    next(new View(this));
                 }
-                if (errorCode == SpeechRecognizer.ERROR_NETWORK) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
-                    builder.setTitle("ERROR_NETWORK!")
-                            .setMessage("Проверьте подключение к интернету!")
-                            .setCancelable(false)
-                            .setNegativeButton("ОК", (dialog, id) -> {
-                                dialog.cancel();
-                                onBackPressed();
-                                finish();
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                if (errorCode == SpeechRecognizer.ERROR_NO_MATCH && next.isEnabled()) {
+                    returnedText.setText("NO MATCH");
+                    speech.cancel();
+                    speech.destroy();
+                    speech = SpeechRecognizer.createSpeechRecognizer(this);
+                    speech.setRecognitionListener(this);
+                    start1();
+                }
+                if (errorCode == SpeechRecognizer.ERROR_NETWORK|| errorCode == SpeechRecognizer.ERROR_NETWORK_TIMEOUT) {
+                    errDialog("ERROR_NETWORK!","Проверьте подключение к интернету!");
                 }
                 if (errorCode == SpeechRecognizer.ERROR_AUDIO) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
-                    builder.setTitle("ERROR_AUDIO!")
-                            .setMessage("Ошибка аудио потока!")
-                            .setCancelable(false)
-                            .setNegativeButton("ОК", (dialog, id) -> {
-                                dialog.cancel();
-                                onBackPressed();
-                                finish();
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                    errDialog("ERROR_AUDIO!","Ошибка аудио потока!");
                 }
                 if (errorCode == SpeechRecognizer.ERROR_SERVER) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
-                    builder.setTitle("ERROR_SERVER!")
-                            .setMessage("Ошибка подключения к серверу Google. \nПопробуйте перезапустить приложение!")
-                            .setCancelable(false)
-                            .setNegativeButton("ОК", (dialog, id) -> {
-                                dialog.cancel();
-                                onBackPressed();
-                                finish();
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                    errDialog("ERROR_SERVER!",
+                            "Ошибка подключения к серверу Google. " +
+                                    "\nПопробуйте перезапустить приложение!");
                 }
                 if (errorCode == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
-                    stopRecord();
-                    muteAudio(false);
-                    Toast.makeText(this, "ERROR_SPEECH_TIMEOUT", Toast.LENGTH_LONG).show();
+                    returnedText.setText("SPEECH TIMEOUT");
+                    speech.cancel();
+                    speech.destroy();
+                    speech = SpeechRecognizer.createSpeechRecognizer(this);
+                    speech.setRecognitionListener(this);
                     start1();
                 }
             }
-        } else {
-            stopRecord();
-            muteAudio(false);
         }
+    }
+
+    private void errDialog(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setNegativeButton("ОК", (dialog, id) -> {
+                    dialog.cancel();
+                    toMain();
+                    finish();
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -419,8 +408,6 @@ public class Game extends AppCompatActivity implements
         recording.replace("  ", "");
         returnedText.setText(recording);
         verification();
-//        speech.startListening(recognizerIntent);
-//        stopRecord();
     }
 
     @Override
@@ -528,13 +515,17 @@ public class Game extends AppCompatActivity implements
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Intent intent = new Intent(Game.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                toMain();
             }
         });
         muteAudio(false);
         play(Game.this, R.raw.click, NOTHING);
         back.startAnimation(anim);
+    }
+
+    private void toMain() {
+        Intent intent = new Intent(Game.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
